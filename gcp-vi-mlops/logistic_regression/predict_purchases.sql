@@ -1,4 +1,4 @@
--- Dataset I:D bqml_lab
+-- Dataset ID: bqml_lab_us
 -- Table Data: training_data
 
 -- QUESTIONS:
@@ -11,6 +11,7 @@
 -- In this case, label is what you're trying to fit to (or predict).
 -- This data will be the training data for the ML model you create. The training data is being limited to those collected from 1 August 2016 to 31 June 2017.
 -- This is done to save the last month of data for "prediction". It is further limited to 10,000 data points to save some time.
+
 #standardSQL
 CREATE OR REPLACE VIEW `gcp-vi-s-mlops.bqml_lab_us.training_data` AS
 SELECT
@@ -56,8 +57,12 @@ SELECT * from `bqml_lab_us.training_data`;
 SELECT
   *
 FROM
-  ml.EVALUATE(MODEL `bqml_lab_us.sample_model`);
+  ml.EVALUATE(MODEL `bqml_lab_us.sample_model`, TABLE `bqml_lab_us.training_data`);
 -- In this query, you use the ml.EVALUATE function to evaluate the predicted values against the actual data, and it shares some metrics of how the model performed.
+
+-- Example Output
+-- Row	precision	recall	accuracy	f1_score	log_loss	roc_auc
+-- 1	0.23529411764705882	0.033898305084745763	0.9873	0.059259259259259262	0.044909609702301873	0.95739760239760241
 
 
 -- Use the model
@@ -98,8 +103,31 @@ SELECT
   fullVisitorId,
   SUM(predicted_label) as total_predicted_purchases
 FROM
-  ml.PREDICT(MODEL `bqml_lab.sample_model`, (
+  ml.PREDICT(MODEL `bqml_lab_us.sample_model`, (
 SELECT * FROM `bqml_lab_us.july_data`))
 GROUP BY fullVisitorId
 ORDER BY total_predicted_purchases DESC
 LIMIT 10;
+
+------------------- Additional Section ---------------------
+-- Prompt: Write a query to predict the top 10 visitors by total predicted purchases using the bqml_lab.sample_model and bqml_lab.july_data tables.
+SELECT
+  ml_predict_results.fullVisitorId,
+  SUM(ml_predict_results.predicted_label) AS total_predicted_purchases
+FROM
+  ML.PREDICT( MODEL `bqml_lab.sample_model`,
+    (
+    SELECT
+      t2.os,
+      t2.is_mobile,
+      t2.country,
+      t2.pageviews,
+      t2.fullVisitorId
+    FROM
+      `bqml_lab_us.july_data` AS t2 )) AS ml_predict_results
+GROUP BY
+  ml_predict_results.fullVisitorId
+ORDER BY
+  SUM(ml_predict_results.predicted_label) DESC
+LIMIT
+  10;
