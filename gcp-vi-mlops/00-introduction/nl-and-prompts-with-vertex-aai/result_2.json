@@ -1,0 +1,51 @@
+{
+  "entities": [
+    {
+      "name": "sushi",
+      "type": "CONSUMER_GOOD",
+      "metadata": {},
+      "salience": 0.51064336,
+      "mentions": [
+        {
+          "text": {
+            "content": "sushi",
+            "beginOffset": 12
+          },
+          "type": "COMMON",
+          "sentiment": {
+            "magnitude": 0,
+            "score": 0
+          }
+        }
+      ],
+      "sentiment": {
+        "magnitude": 0,
+        "score": 0
+      }
+    },
+    {
+      "name": "service",
+      "type": "OTHER",
+      "metadata": {},
+      "salience": 0.48935664,
+      "mentions": [
+        {
+          "text": {
+            "content": "service",
+            "beginOffset": 26
+          },
+          "type": "COMMON",
+          "sentiment": {
+            "magnitude": 0.7,
+            "score": -0.7
+          }
+        }
+      ],
+      "sentiment": {
+        "magnitude": 0.7,
+        "score": -0.7
+      }
+    }
+  ],
+  "language": "en"
+}
